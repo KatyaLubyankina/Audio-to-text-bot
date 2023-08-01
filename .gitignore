@@ -1,2 +1,5 @@
 # Enviroment
 /env
+
+# Bot token
+/src/secrets/BOT_TOKEN
