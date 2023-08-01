@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "audio-to-text-bot"
+version = "0.1.0"
+description = ""
+authors = ["katyalubyankina <katylubyankina@gmail.com>"]
+readme = "README.md"
+packages = [{include = "audio_to_text_bot"}]
+
+[tool.poetry.dependencies]
+python = "3.10.10"
+fastapi = "^0.100.1"
+loguru = "^0.7.0"
+pytest = "^7.4.0"
+uvicorn = "^0.23.2"
+pre-commit = "^3.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
