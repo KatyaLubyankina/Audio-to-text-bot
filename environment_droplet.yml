@@ -1,0 +1,7 @@
+name: condaenv
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - poetry=1.4
+  - git=2.40
