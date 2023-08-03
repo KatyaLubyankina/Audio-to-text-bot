@@ -3,3 +3,7 @@
 
 # Bot token
 /src/secrets/BOT_TOKEN
+
+# Cache
+**/__pycache__/
+.pytest_cache/
