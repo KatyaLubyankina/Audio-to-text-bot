@@ -24,7 +24,11 @@ Install packages with poetry
 ```Shell
 poetry install
 ```
-Call pre-commit command to initialize environment for pre-commit-hooks and use it before commit to check files.
+Run this command to set up the git hooks scripts
+```Shell
+pre-commit install
+```
+Call pre-commit command to initialize environment for pre-commit-hooks.
 ```Shell
 pre-commit
 ```
