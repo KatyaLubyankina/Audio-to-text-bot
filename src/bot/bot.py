@@ -1,3 +1,6 @@
+import json
+
+import requests
 import telebot
 import validators
 
@@ -19,21 +22,28 @@ def send_welcome(message):
 @bot.message_handler(commands=["sendlink"])
 def get_link(message):
     msg = bot.reply_to(message, "Send a link to get transcription!")
-    bot.register_next_step_handler(msg, check_link)
+    bot.register_next_step_handler(msg, handel_client)
 
 
-def check_link(msg):
+def handel_client(msg):
     link = msg.text
     if validators.url(link):
         text = "Started converting your link to text..."
         bot.send_message(msg.chat.id, text)
-        bot.register_next_step_handler(msg, get_transcription)
+        response = handel_api(msg)
+        if response.status_code == 200:
+            bot.send_message(msg.chat.id, response.json()["response"])
+        else:
+            bot.send_message(msg.chat.id, response.status_code)
     else:
         bot.send_message(msg.chat.id, "Your link is invalid.")
 
 
-def get_transcription(msg):
-    pass
+def handel_api(msg):
+    url = config.get_settings().url_to_sent_link
+    data = json.dumps({"chat_id": msg.chat.id, "link": msg.text})
+    response = requests.post(url, data=data)
+    return response
 
 
 bot.infinity_polling()
