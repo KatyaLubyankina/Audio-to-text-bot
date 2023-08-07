@@ -1,5 +1,5 @@
 # How to build project for development?
-Clone github repositiory 
+Clone github repositiory
 ```Shell
 git clone https://github.com/KatyaLubyankina/Audio-to-text-bot.git
 ```
@@ -9,7 +9,7 @@ cd Audio-to-text-bot
 ```
 Start conda environment from environment_droplet.yml
 ```Shell
-conda env create -f environment_droplet.yml 
+conda env create -f environment_droplet.yml
 ```
 Activate conda environment
 ```Shell
@@ -24,4 +24,11 @@ Install packages with poetry
 ```Shell
 poetry install
 ```
-
+Run this command to set up the git hooks scripts
+```Shell
+pre-commit install
+```
+Call pre-commit command to initialize environment for pre-commit-hooks.
+```Shell
+pre-commit
+```
