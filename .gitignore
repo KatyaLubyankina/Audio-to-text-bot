@@ -9,4 +9,4 @@
 .pytest_cache/
 
 # Video
-/src/video/*
+/src/tracks/*
