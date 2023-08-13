@@ -10,3 +10,7 @@
 
 # Video
 /src/tracks/*
+
+# Mock files
+mock_file_process.txt
+mock_file_postprocess.txt
