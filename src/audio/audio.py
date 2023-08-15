@@ -40,6 +40,6 @@ def cut_audio(path: str) -> str:
         Path to cropped audio file
     """
     end_time = config.get_settings().end_of_audio_time
-    cut_title = "src/tracks/" + "crop_" + path.split("/")[-1]
-    ffmpeg_extract_subclip(path, 0, end_time, targetname=cut_title)
-    return cut_title
+    path_to_cut_file = "src/tracks/" + "crop_" + path.split("/")[-1]
+    ffmpeg_extract_subclip(path, 0, end_time, targetname=path_to_cut_file)
+    return path_to_cut_file
