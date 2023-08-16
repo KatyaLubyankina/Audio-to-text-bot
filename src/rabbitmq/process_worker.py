@@ -1,3 +1,5 @@
+import json
+
 import pika
 
 
@@ -15,12 +17,15 @@ def process_worker() -> None:
     channel.queue_bind(exchange="processing", queue=queue_name, routing_key=binding_key)
 
     def callback(ch, method, properties, body):
-        path = body.decode()
-        print(path)
+        data = json.loads(body.decode())
+        # path = data["path"]
+        chat_id = data["chat_id"]
+        path_to_process_file = "mock_file_process.txt"
+        message = {"path": path_to_process_file, "chat_id": chat_id}
         channel.basic_publish(
             exchange="processing",
             routing_key="postprocess",
-            body="moc_file_process.txt",
+            body=json.dumps(message),
         )
 
     channel.basic_consume(queue=queue_name, on_message_callback=callback)
