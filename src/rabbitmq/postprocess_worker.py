@@ -31,7 +31,6 @@ def postprocess_worker():
 
     def callback(ch, method, properties, body):
         data = json.loads(body.decode())
-        # path_to_process_file = data["path"]
         chat_id = data["chat_id"]
         postprocess_file = "mock_file_postprocess.txt"
         url = config.get_settings().url_to_sent_link + "/link/analytics"

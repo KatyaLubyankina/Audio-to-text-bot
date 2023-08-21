@@ -28,10 +28,8 @@ def process_worker() -> None:
 
     def callback(ch, method, properties, body):
         data = json.loads(body.decode())
-        # path = data["path"]
         chat_id = data["chat_id"]
         path_to_process_file = "mock_file_process.txt"
-        print("Process_worker started")
         message = {"path": path_to_process_file, "chat_id": chat_id}
         channel.basic_publish(
             exchange="processing",

@@ -3,8 +3,7 @@ import json
 import pika
 
 import src.config as config
-
-# from src.audio import audio
+from src.audio import audio
 
 
 def preprocess_worker() -> None:
@@ -32,8 +31,10 @@ def preprocess_worker() -> None:
         path_to_cut_file = "mock_path"
         data = json.loads(body.decode())
         chat_id = data["chat_id"]
+        link = data["link"]
+        audio_info = audio.download_audio(link)
+        path_to_cut_file = audio.cut_audio(audio_info)
         message = {"path": path_to_cut_file, "chat_id": chat_id}
-        print("Preprocess_worker started as callback")
         channel.basic_publish(
             exchange="processing", routing_key="process", body=json.dumps(message)
         )
@@ -44,4 +45,3 @@ def preprocess_worker() -> None:
 
 
 preprocess_worker()
-print("Started preprocess worker file")
