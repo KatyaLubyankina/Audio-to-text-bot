@@ -1,12 +1,20 @@
 # Enviroment
 /env
 
-# Bot token
+# secrets
 /src/secrets/BOT_TOKEN
-
+/src/secrets/RABBITMQ_PASSWORD
+/src/secrets/RABBITMQ_USER
 # Cache
 **/__pycache__/
 .pytest_cache/
 
 # Video
 /src/tracks/*
+
+# Mock files
+mock_file_process.txt
+mock_file_postprocess.txt
+
+# Logs
+/log.log
