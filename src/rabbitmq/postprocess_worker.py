@@ -2,13 +2,22 @@ import json
 
 import pika
 import requests
-from loguru import logger
 
 import src.config as config
+from src.logging import logger_wraps
 
 
-def postprocess_worker() -> None:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+@logger_wraps()
+def postprocess_worker():
+    username = config.get_settings().rabbitmq_user.get_secret_value()
+    password = config.get_settings().rabbitmq_password.get_secret_value()
+    credentials = pika.PlainCredentials(username, password)
+    host = config.get_settings().rabbitmq_url
+    port = config.get_settings().rabbitmq_port
+    parameters = pika.ConnectionParameters(
+        host, port, "/", credentials=credentials, retry_delay=5
+    )
+    connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
     channel.exchange_declare(exchange="processing", exchange_type="topic")
@@ -27,7 +36,6 @@ def postprocess_worker() -> None:
         postprocess_file = "mock_file_postprocess.txt"
         url = config.get_settings().url_to_sent_link + "/link/analytics"
         data = json.dumps({"chat_id": chat_id, "path": postprocess_file})
-        logger.debug(f"{data}")
         requests.post(url, data=data)
 
     channel.basic_consume(queue=queue_name, on_message_callback=callback)
