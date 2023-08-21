@@ -8,7 +8,6 @@ from src.logging import logger_wraps
 
 @logger_wraps()
 def preprocess_producer(link: str, chat_id: int):
-    print(f"prepocess_producer_{link}")
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)
