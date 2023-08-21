@@ -1,10 +1,11 @@
 import functools
+import sys
 
 from loguru import logger
 
 logger.remove()
 logger.add(
-    "log.log",
+    sys.stdout,
     colorize=False,
     format="<green>{time:HH:mm:ss}</green> | {level} | <level>{message}</level>",
     level="DEBUG",

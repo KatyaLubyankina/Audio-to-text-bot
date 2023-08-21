@@ -1,9 +1,10 @@
 # Enviroment
 /env
 
-# Bot token
+# secrets
 /src/secrets/BOT_TOKEN
-
+/src/secrets/RABBITMQ_PASSWORD
+/src/secrets/RABBITMQ_USER
 # Cache
 **/__pycache__/
 .pytest_cache/

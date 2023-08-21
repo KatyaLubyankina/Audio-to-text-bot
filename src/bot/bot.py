@@ -6,7 +6,7 @@ import validators
 
 import src.config as config
 
-BOT_TOKEN = config.get_settings().BOT_TOKEN.get_secret_value()
+BOT_TOKEN = config.get_settings().bot_token.get_secret_value()
 bot = telebot.TeleBot(BOT_TOKEN)
 
 

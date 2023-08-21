@@ -2,9 +2,19 @@ import json
 
 import pika
 
+import src.config as config
+
 
 def process_worker() -> None:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+    username = config.get_settings().rabbitmq_user.get_secret_value()
+    password = config.get_settings().rabbitmq_password.get_secret_value()
+    credentials = pika.PlainCredentials(username, password)
+    host = config.get_settings().rabbitmq_url
+    port = config.get_settings().rabbitmq_port
+    parameters = pika.ConnectionParameters(
+        host, port, "/", credentials=credentials, retry_delay=5
+    )
+    connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
     channel.exchange_declare(exchange="processing", exchange_type="topic")
@@ -21,6 +31,7 @@ def process_worker() -> None:
         # path = data["path"]
         chat_id = data["chat_id"]
         path_to_process_file = "mock_file_process.txt"
+        print("Process_worker started")
         message = {"path": path_to_process_file, "chat_id": chat_id}
         channel.basic_publish(
             exchange="processing",
