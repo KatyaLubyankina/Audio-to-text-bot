@@ -7,7 +7,16 @@ from src.logging import logger_wraps
 
 
 @logger_wraps()
-def preprocess_producer(link: str, chat_id: int):
+def preprocess_producer(link: str, chat_id: int) -> None:
+    """Rabbitmq producer.
+
+    Args:
+        link (str): url to video file
+        chat_id (int): id of telegram chat
+
+    Function creates connection to rabbimq server and sends link and chat_id
+    as a message to "processing" exchange(exchange_type="topic").
+    """
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)

@@ -13,6 +13,8 @@ logger.add(
 
 
 def logger_wraps(*, entry=True, exit=True, level="DEBUG"):
+    """Decorator for logging."""
+
     def wrapper(func):
         name = func.__name__
 

@@ -6,6 +6,14 @@ import src.config as config
 
 
 def process_worker() -> None:
+    """Rabbimq worker.
+    Function creates connection to rabbimq server and consumes messages
+    from topic exchange "processing" with routing_key "process".
+    Callback function processes audio.
+    Then function sends chat id and path to process file
+    to exchange "processing" with binding_key "postprocess".
+
+    """
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)
