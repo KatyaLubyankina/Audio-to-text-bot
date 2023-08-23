@@ -1,5 +1,8 @@
+import traceback
+
+import pytube
+from loguru import logger
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-from pytube import YouTube, exceptions
 
 import src.config as config
 
@@ -16,16 +19,19 @@ def download_audio(url: str) -> dict:
         Dict with path to file and duration of audio in seconds.
         {"path": path, "duration": duration}
     """
-    yt = YouTube(url)
+    yt = pytube.YouTube(url)
     title = yt.title
     yt_audio = yt.streams.get_audio_only()
     path = f"src/tracks/{title}.mp4"
     duration = yt.length
     try:
         yt_audio.download(output_path="src/tracks/")
-    except exceptions.PytubeError("Unable to download a video."):
+    except Exception:
+        logger.debug(traceback.format_exc())
+        duration = 0
         path = None
-    return {"path": path, "duration": duration}
+    finally:
+        return {"path": path, "duration": duration}
 
 
 def cut_audio(audio_info: dict) -> dict:
