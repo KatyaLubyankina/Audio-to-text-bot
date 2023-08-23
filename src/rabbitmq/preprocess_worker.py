@@ -7,6 +7,15 @@ from src.audio import audio
 
 
 def preprocess_worker() -> None:
+    """Rabbimq worker.
+    Function creates connection to rabbimq server and consumes messages
+    from topic exchange "processing" with routing_key "preprocess".
+    Callback function downloads audio track
+    from link in message (only Youtube) and cuts it.
+    Then function sends to exchange "processing" chat_id and
+    path to cut audio with binding_key "process".
+
+    """
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)
@@ -28,7 +37,6 @@ def preprocess_worker() -> None:
     channel.queue_bind(exchange="processing", queue=queue_name, routing_key=binding_key)
 
     def callback(ch, method, properties, body):
-        path_to_cut_file = "mock_path"
         data = json.loads(body.decode())
         chat_id = data["chat_id"]
         link = data["link"]

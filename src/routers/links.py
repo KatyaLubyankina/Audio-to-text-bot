@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from loguru import logger
 
 from src.bot.bot import send_analytic
 from src.logging import logger_wraps
@@ -11,16 +10,22 @@ router = APIRouter(prefix="/link", tags=["link"])
 
 @router.post("")
 @logger_wraps()
-def handle_link(request: LinkBase):
-    print(f"{request.link}")
+def handle_link(request: LinkBase) -> None:
+    """Endpoint sends link and chat id to rabbitmq producer (preprocess_producer).
+
+    Args:
+        request (LinkBase): link and chat_id.
+    """
     preprocess_producer(link=request.link, chat_id=request.chat_id)
-    logger.debug("process_producer finished")
-    return
 
 
 @router.post("/analytics")
 @logger_wraps()
 def analytics(request: FileBase):
-    logger.debug(f"{request.path},{request.chat_id}")
+    """Endpoint sends analytic to send_analytic function.
+
+    Args:
+        request (FileBase): _description_
+    """
     send_analytic(request.chat_id, request.path)
     return

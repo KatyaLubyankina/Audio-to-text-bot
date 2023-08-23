@@ -9,6 +9,14 @@ from src.logging import logger_wraps
 
 @logger_wraps()
 def postprocess_worker():
+    """Rabbitmq worker.
+    Function creates connection to rabbimq server and consumes messages
+    from topic exchange "processing" with routing_key "postprocess".
+    Callback function handles text postprocessing.
+    Then function sends chat id and path to post_process file
+    to exchange "processing" with binding_key "postprocess".
+
+    """
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)
@@ -33,7 +41,7 @@ def postprocess_worker():
         data = json.loads(body.decode())
         chat_id = data["chat_id"]
         postprocess_file = "mock_file_postprocess.txt"
-        url = config.get_settings().url_to_sent_link + "/link/analytics"
+        url = config.get_settings().url_app + "/link/analytics"
         data = json.dumps({"chat_id": chat_id, "path": postprocess_file})
         requests.post(url, data=data)
 
