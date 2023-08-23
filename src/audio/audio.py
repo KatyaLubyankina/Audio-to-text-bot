@@ -5,7 +5,7 @@ import src.config as config
 
 
 def download_audio(url: str) -> dict:
-    """Downloads audio track from video
+    """Downloads audio track from video.
 
     Downloads audio from video clip only from Youtube to /src/tracks directory.
 
@@ -13,7 +13,8 @@ def download_audio(url: str) -> dict:
         url (str): url for video (Youtube only)
 
     Returns:
-        Dict with path to file and duration of audio in seconds
+        Dict with path to file and duration of audio in seconds.
+        {"path": path, "duration": duration}
     """
     yt = YouTube(url)
     title = yt.title
@@ -31,8 +32,8 @@ def cut_audio(audio_info: dict) -> dict:
     """Cuts audio track.
 
     Function returns only first minutes of audio file.
-    Duration of cropped audio is specified in config file.
-    New file name is 'crop_{audio_filename}.mp4'
+    Duration of cropped audio is specified in config.py file.
+    New filename is 'crop_{audio_filename}.mp4'
 
     Args:
         audio_info (dict): path to audio
