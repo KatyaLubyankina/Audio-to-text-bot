@@ -1,5 +1,5 @@
 # Audio-to-text bot
-This telegram bot allows users to send a link for video to [telegram bot](https://t.me/audio_to_text_tg_bot) and get analytics on audio track.
+This telegram bot allows users to send a link for video to [telegram bot](https://t.me/audio_to_text_tg_bot) and get a transcript and analytics on audio track.
 
 **Features**:
 - [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10) - framework for API
@@ -16,10 +16,27 @@ This telegram bot allows users to send a link for video to [telegram bot](https:
 - [Pre-commit](https://pre-commit.com/) - black, flake8 and isort formate code before each commit
 ## Getting started
 You need to add secret data in src/secrets directory before building project: bot token from [BotFather](https://telegram.me/BotFather) and username and password for rabbitmq management.
-Then run this command to start project using docker.
+Then run these commands to start project using docker.
+Clone github repository
+```Shell
+git clone https://github.com/KatyaLubyankina/Audio-to-text-bot.git
+```
+Change directory to Audio-to-text-bot
+```Shell
+cd Audio-to-text-bot
+```
 ```Shell
 docker-compose up --build
 ```
+You can access:
+- server with FastAPI at http://localhost:8000
+- documentation for FastAPI at http://localhost:8000/docs
+- RabbitMQ management at http://localhost:15672
+- telegram bot at https://t.me/audio_to_text_tg_bot
+
+## Telegram bot commands
+- /hello or /start - bot sends hello and explains how to use /sendlink command
+- /sendlink - bot verifies link and send transcript and analytics if link was correct
 ## How to build project for development?
 Clone github repository
 ```Shell
@@ -54,4 +71,3 @@ Call pre-commit command to initialize environment for pre-commit-hooks.
 ```Shell
 pre-commit
 ```
-## FastAPI endpoints
