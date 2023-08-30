@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(secrets_dir="src/secrets/")
-    bot_token: SecretStr
+    bot_token: SecretStr = ""
     url_app: str = "http://app:8000"
     end_of_audio_time: int = 300
     rabbitmq_url: str = "rabbitmq"
@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     minio_host_name: str = "minio"
     access_key_s3: str = "minioadmin"
     secret_key_s3: SecretStr
+    rabbitmq_user: SecretStr = "guest"
+    rabbitmq_password: SecretStr = "guest"
+
 
 
 @lru_cache()
