@@ -1,7 +1,9 @@
+import os
 import traceback
 
 import pytube
 from loguru import logger
+from minio import Minio
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 import src.config as config
@@ -50,7 +52,20 @@ def cut_audio(audio_info: dict) -> dict:
     path = audio_info["path"]
     duration = audio_info["duration"]
     end_time = config.get_settings().end_of_audio_time
-    path_to_cut_file = "src/tracks/" + "crop_" + path.split("/")[-1]
+    file_name = "crop_" + path.split("/")[-1]
+    path_to_cut_file = "src/tracks/" + file_name
     end_time = min(duration, end_time)
     ffmpeg_extract_subclip(path, 0, end_time, targetname=path_to_cut_file)
-    return {"path_to_cut_file": path_to_cut_file}
+    minio_client = Minio(
+        endpoint=f"{config.get_settings().minio_host_name}:9000",
+        access_key=config.get_settings().access_key_s3,
+        secret_key=config.get_settings().secret_key_s3.get_secret_value(),
+        secure=False,
+    )
+    found = minio_client.bucket_exists("audio")
+    if not found:
+        minio_client.make_bucket("audio")
+    minio_client.fput_object("audio", file_name, path_to_cut_file)
+    os.remove(path)
+    os.remove(path_to_cut_file)
+    return {"Bucket name": "audio", "file_name": file_name}

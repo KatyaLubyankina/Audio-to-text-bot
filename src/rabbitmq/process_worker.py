@@ -36,6 +36,14 @@ def process_worker() -> None:
 
     def callback(ch, method, properties, body):
         data = json.loads(body.decode())
+        # file_name = data["file_name"]
+        # minio_client = Minio(
+        #     endpoint=f"{config.get_settings().minio_host_name}:9000",
+        #     access_key=config.get_settings().access_key_s3,
+        #     secret_key=config.get_settings().secret_key_s3.get_secret_value(),
+        #     secure=False
+        # )
+        # file = minio_client.fget_object("audio",file_name)
         chat_id = data["chat_id"]
         path_to_process_file = "mock_file_process.txt"
         message = {"path": path_to_process_file, "chat_id": chat_id}

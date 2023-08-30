@@ -24,8 +24,14 @@ class Settings(BaseSettings):
     end_of_audio_time: int = 300
     rabbitmq_url: str = "rabbitmq"
     rabbitmq_port: int = 5672
+    rabbitmq_user: SecretStr
+    rabbitmq_password: SecretStr
+    minio_host_name: str = "minio"
+    access_key_s3: str = "minioadmin"
+    secret_key_s3: SecretStr
     rabbitmq_user: SecretStr = "guest"
     rabbitmq_password: SecretStr = "guest"
+
 
 
 @lru_cache()

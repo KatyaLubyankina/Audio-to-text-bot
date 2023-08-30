@@ -41,8 +41,8 @@ def preprocess_worker() -> None:
         chat_id = data["chat_id"]
         link = data["link"]
         audio_info = audio.download_audio(link)
-        path_to_cut_file = audio.cut_audio(audio_info)
-        message = {"path": path_to_cut_file, "chat_id": chat_id}
+        file_name = audio.cut_audio(audio_info)["file_name"]
+        message = {"file_name": file_name, "chat_id": chat_id}
         channel.basic_publish(
             exchange="processing", routing_key="process", body=json.dumps(message)
         )
