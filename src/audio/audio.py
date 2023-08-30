@@ -68,4 +68,4 @@ def cut_audio(audio_info: dict) -> dict:
     minio_client.fput_object("audio", file_name, path_to_cut_file)
     os.remove(path)
     os.remove(path_to_cut_file)
-    return {"Bucket name": "audio", "path_to_cut_file": path_to_cut_file}
+    return {"Bucket name": "audio", "file_name": file_name}
