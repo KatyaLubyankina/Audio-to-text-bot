@@ -52,4 +52,5 @@ def preprocess_worker() -> None:
     channel.start_consuming()
 
 
-preprocess_worker()
+if __name__ == "__main__":
+    preprocess_worker()

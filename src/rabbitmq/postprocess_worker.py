@@ -50,4 +50,5 @@ def postprocess_worker():
     channel.start_consuming()
 
 
-postprocess_worker()
+if __name__ == "__main__":
+    postprocess_worker()

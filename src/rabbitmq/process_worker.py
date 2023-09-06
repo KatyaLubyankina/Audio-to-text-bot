@@ -1,11 +1,14 @@
 import json
+import os
 
 import pika
+from minio import Minio
 
 import src.config as config
+from src.whisper.whisper_transcribe import transcribe_text
 
 
-def process_worker() -> None:
+def process_worker():
     """Rabbimq worker.
     Function creates connection to rabbimq server and consumes messages
     from topic exchange "processing" with routing_key "process".
@@ -14,6 +17,7 @@ def process_worker() -> None:
     to exchange "processing" with binding_key "postprocess".
 
     """
+    print("process worker started")
     username = config.get_settings().rabbitmq_user.get_secret_value()
     password = config.get_settings().rabbitmq_password.get_secret_value()
     credentials = pika.PlainCredentials(username, password)
@@ -36,16 +40,20 @@ def process_worker() -> None:
 
     def callback(ch, method, properties, body):
         data = json.loads(body.decode())
-        # file_name = data["file_name"]
-        # minio_client = Minio(
-        #     endpoint=f"{config.get_settings().minio_host_name}:9000",
-        #     access_key=config.get_settings().access_key_s3,
-        #     secret_key=config.get_settings().secret_key_s3.get_secret_value(),
-        #     secure=False
-        # )
-        # file = minio_client.fget_object("audio",file_name)
+        file_name = data["file_name"]
+        minio_client = Minio(
+            endpoint=f"{config.get_settings().minio_host_name}:9000",
+            access_key=config.get_settings().access_key_s3,
+            secret_key=config.get_settings().secret_key_s3.get_secret_value(),
+            secure=False,
+        )
+        minio_client.fget_object("audio", file_name, f"src/rabbitmq/{file_name}")
+        audio_bytes = open(f"src/rabbitmq/{file_name}", "rb")
+        transcribe_text(audio_bytes, "src/rabbitmq/transcribed_text.txt")
+        audio_bytes.close()
+        os.remove(f"src/rabbitmq/{file_name}")
         chat_id = data["chat_id"]
-        path_to_process_file = "mock_file_process.txt"
+        path_to_process_file = "src/rabbitmq/transcribed_text.txt"
         message = {"path": path_to_process_file, "chat_id": chat_id}
         channel.basic_publish(
             exchange="processing",
@@ -58,4 +66,5 @@ def process_worker() -> None:
     channel.start_consuming()
 
 
-process_worker()
+if __name__ == "__main__":
+    process_worker()
