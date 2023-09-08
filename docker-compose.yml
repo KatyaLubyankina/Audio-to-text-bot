@@ -1,76 +1,86 @@
 version: '3'
 
 services:
- app:
-  container_name: "app"
-  build:
-    dockerfile: Dockerfile
-  ports:
-    - 8000:8000
-  restart: always
-  depends_on:
-    - rabbit_mq
+  app:
+    container_name: "app"
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - rabbit_mq
 
- preprocess:
-  container_name: "preprocess"
-  build:
-    dockerfile: Dockerfile.preprocess
-  environment:
-    PYTHONUNBUFFERED: '1'
-  restart: always
-  depends_on:
-    - rabbit_mq
-    - app
+  preprocess:
+    container_name: "preprocess"
+    build:
+      dockerfile: Dockerfile.preprocess
+    environment:
+      PYTHONUNBUFFERED: '1'
+    restart: always
+    depends_on:
+      - rabbit_mq
+      - app
 
- process:
-  container_name: "process"
-  build:
-    dockerfile: Dockerfile.process
-  environment:
-    PYTHONUNBUFFERED: '1'
-  restart: always
-  depends_on:
-    - preprocess
+  postprocess:
+    container_name: "postprocess"
+    build:
+      dockerfile: Dockerfile.postprocess
+    environment:
+      PYTHONUNBUFFERED: '1'
+    restart: always
+    depends_on:
+      - whisper
 
- postprocess:
-  container_name: "postprocess"
-  build:
-    dockerfile: Dockerfile.postprocess
-  environment:
-    PYTHONUNBUFFERED: '1'
-  restart: always
-  depends_on:
-    - process
+  rabbit_mq:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=bot
+      - RABBITMQ_DEFAULT_PASS=bot
+    container_name: "rabbit_mq"
+    ports:
+      - 5672:5672
+      - 15672:15672
 
- rabbit_mq:
-  image: rabbitmq:3.12-management
-  hostname: rabbitmq
-  restart: always
-  environment:
-    - RABBITMQ_DEFAULT_USER=bot
-    - RABBITMQ_DEFAULT_PASS=bot
-  container_name: "rabbit_mq"
-  ports:
-    - 5672:5672
-    - 15672:15672
- bot:
-  container_name: "bot"
-  build:
-    dockerfile: Dockerfile.bot
-  depends_on:
-    - rabbit_mq
-    - app
-    - minio
+  bot:
+    container_name: "bot"
+    build:
+      dockerfile: Dockerfile.bot
+    depends_on:
+      - rabbit_mq
+      - app
+      - minio
 
- minio:
-  image: quay.io/minio/minio:latest
-  hostname: minio
-  command: minio server --console-address ":9090" /data
-  ports:
-    - 9000:9000
-    - 9090:9090
-  volumes:
-    - minio:/var/lib/minio
+  minio:
+    container_name: "minio"
+    image: quay.io/minio/minio:latest
+    hostname: minio
+    command: minio server --console-address ":9090" /data
+    ports:
+      - 9000:9000
+      - 9090:9090
+    volumes:
+      - minio:/var/lib/minio
+
+  whisper:
+    container_name: "whisper"
+    build:
+      dockerfile: Dockerfile.whisper
+    ports:
+      - 9091:9090
+    environment:
+      PYTHONUNBUFFERED: '1'
+    restart: always
+    depends_on:
+      - preprocess
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
 
 volumes:
   minio:
