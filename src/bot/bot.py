@@ -6,6 +6,7 @@ import validators
 from requests import Response
 
 import src.config as config
+from src.rabbitmq.mongo import get_document_mongo
 
 BOT_TOKEN = config.get_settings().bot_token.get_secret_value()
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -73,17 +74,20 @@ def send_link_to_api(msg) -> Response:
     return response
 
 
-def send_analytic(chat_id: int, path_to_analytics: str) -> None:
+def send_analytic(chat_id: int, file_uuid: str) -> None:
     """Function sends analytics for video.
 
+    Gets transcript from MongoDB with provided uuid, encode text and
+    send to user in telegram chat.
     Args:
         chat_id (int): id of telegram chat
         path_to_analytics (str): path to file with analytics
 
     Function sends user file with analytics in chat with provided chat_id.
     """
-    document = open(path_to_analytics, "rb")
-    bot.send_document(chat_id, document)
+    document = get_document_mongo(file_uuid)["transcript"]
+    byte_document = document.encode("ascii")
+    bot.send_document(chat_id, byte_document)
 
 
 if __name__ == "__main__":

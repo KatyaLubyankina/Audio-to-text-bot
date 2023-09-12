@@ -9,7 +9,7 @@ class LinkBase(BaseModel):
 
 
 class FileBase(BaseModel):
-    """Schema for file with analytics."""
+    """Schema for file in MongoDB with analytics."""
 
     chat_id: int
-    path: str
+    file_uuid: str
