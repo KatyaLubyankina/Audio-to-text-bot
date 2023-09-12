@@ -15,13 +15,16 @@ class Settings(BaseSettings):
         rabbitmq_url (str): host for rabbitmq server
         rabbitmq_server (int): port for rabbitmq server
         rabbitmq_user (SecretStr): username to access rabbitmq management
+        mongo_username (SecretStr): username to access MongoDB
+        mongo_password (SecretStr): password to access MongoDB
+        cluster (SecretStr): name of cluster in MongoDB
 
     """
 
     model_config = SettingsConfigDict(secrets_dir="src/secrets/")
     bot_token: SecretStr = ""
     url_app: str = "http://app:8000"
-    end_of_audio_time: int = 300
+    end_of_audio_time: int = 100
     rabbitmq_url: str = "rabbitmq"
     rabbitmq_port: int = 5672
     rabbitmq_user: SecretStr
@@ -31,7 +34,9 @@ class Settings(BaseSettings):
     secret_key_s3: SecretStr
     rabbitmq_user: SecretStr = "guest"
     rabbitmq_password: SecretStr = "guest"
-
+    mongo_username: SecretStr
+    mongo_password: SecretStr
+    cluster: SecretStr
 
 
 @lru_cache()

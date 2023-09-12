@@ -22,10 +22,10 @@ def handle_link(request: LinkBase) -> None:
 @router.post("/analytics", summary="Send analytics on video to user")
 @logger_wraps()
 def analytics(request: FileBase):
-    """Endpoint sends analytic to send_analytic function.
+    """Endpoint sends analytics to send_analytic function.
 
     Args:
-    - request (FileBase): _description_
+    - request (FileBase): contains chat id and uuid for file in MongoDB.
     """
-    send_analytic(request.chat_id, request.path)
+    send_analytic(request.chat_id, request.file_uuid)
     return
