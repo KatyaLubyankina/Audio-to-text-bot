@@ -4,14 +4,15 @@ This telegram bot allows users to send a link for video to [telegram bot](https:
 **Features**:
 - [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10) - framework for API
 - [Uvicorn](https://www.uvicorn.org/) - for ASGI web server
-- [pytelegrambotapi](https://pypi.org/project/pyTelegramBotAPI/) - for telegram bot
 - [Rabbitmq](https://www.rabbitmq.com/) - message broker
+- [MongoDB](https://www.mongodb.com/) - NoSQL database to store transcripts of audio files
 - [Pika](https://pika.readthedocs.io/en/stable/) - implementation of the AMQP 0-9-1 protocol for RabbitMQ
 - [Pydantic-settings](https://docs.pydantic.dev/latest/usage/pydantic_settings/) - for project settings with data validation
 - [Docker Compose](https://docs.docker.com/compose/) - for running application (containers for application, rabbitmq, workers and bot)
 - [Pytest](https://docs.pytest.org/en/latest/) - for tests with pytest fixtures
 - CI/CD pipeline: Github action for pytest and docker image build before pull request in main
 - [Poetry](https://python-poetry.org/) - for packaging and dependency management
+- [pytelegrambotapi](https://pypi.org/project/pyTelegramBotAPI/) - for telegram bot
 - [Loguru](https://loguru.readthedocs.io/en/stable/api/logger.html) - for logging errors
 - [Pre-commit](https://pre-commit.com/) - black, flake8 and isort formate code before each commit
 ## Getting started
@@ -71,3 +72,5 @@ Call pre-commit command to initialize environment for pre-commit-hooks.
 ```Shell
 pre-commit
 ```
+
+To use MongoDB database it's required to create an account in [MongoDB Atlas](https://www.mongodb.com/atlas/database) and cluster with database (Audio-to-text-bot) and collection (transcripts). Write username, password and cluster name in src/config.py file.
