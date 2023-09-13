@@ -27,6 +27,7 @@ faster-whisper = "^0.8.0"
 requests = "^2.31.0"
 urllib3 = "^2.0.4"
 pymongo = "^4.5.0"
+redis = "^5.0.0"
 
 
 [build-system]
