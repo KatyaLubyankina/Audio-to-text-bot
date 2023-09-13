@@ -13,15 +13,15 @@ def preprocess_worker():
 
     def process_link(ch, method, properties, body):
         """Downloads audio track and cuts it.
-        Cut audio file is sent to exchange "processing" chat_id and
-        path to cut audio with binding_key "process".
+        Cut audio file is sent to exchange "processing" chat_id,
+        path to cut audio and link to video with binding_key "process".
         """
         data = json.loads(body.decode())
         chat_id = data["chat_id"]
         link = data["link"]
         audio_info = audio.download_audio(link)
         file_name = audio.cut_audio(audio_info)["file_name"]
-        message = {"file_name": file_name, "chat_id": chat_id}
+        message = {"file_name": file_name, "chat_id": chat_id, "link": link}
         channel.basic_publish(
             exchange="processing", routing_key="process", body=json.dumps(message)
         )

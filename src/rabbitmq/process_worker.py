@@ -21,6 +21,7 @@ def process_worker():
         """
         data = json.loads(body.decode())
         file_name = data["file_name"]
+        link = data["link"]
         minio_client = connect_minio()
         minio_client.fget_object("audio", file_name, f"src/rabbitmq/{file_name}")
         audio_bytes = open(f"src/rabbitmq/{file_name}", "rb")
@@ -29,7 +30,7 @@ def process_worker():
         uuid = add_document_mongo("src/rabbitmq/transcribed_text.txt")
         os.remove(f"src/rabbitmq/{file_name}")
         chat_id = data["chat_id"]
-        message = {"file_uuid": uuid, "chat_id": chat_id}
+        message = {"file_uuid": uuid, "chat_id": chat_id, "link": link}
         channel.basic_publish(
             exchange="processing",
             routing_key="postprocess",

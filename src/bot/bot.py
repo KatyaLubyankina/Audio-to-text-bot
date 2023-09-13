@@ -6,6 +6,7 @@ import validators
 from requests import Response
 
 import src.config as config
+from src.logging import logger_wraps
 from src.rabbitmq.mongo import get_document_mongo
 
 BOT_TOKEN = config.get_settings().bot_token.get_secret_value()
@@ -74,6 +75,7 @@ def send_link_to_api(msg) -> Response:
     return response
 
 
+@logger_wraps()
 def send_analytic(chat_id: int, file_uuid: str) -> None:
     """Function sends analytics for video.
 
@@ -81,7 +83,7 @@ def send_analytic(chat_id: int, file_uuid: str) -> None:
     send to user in telegram chat.
     Args:
         chat_id (int): id of telegram chat
-        path_to_analytics (str): path to file with analytics
+        file_uuid (str): uuid of file in MongoDB
 
     Function sends user file with analytics in chat with provided chat_id.
     """
