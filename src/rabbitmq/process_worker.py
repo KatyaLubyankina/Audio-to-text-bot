@@ -1,19 +1,28 @@
 import json
 import os
 
+import pika
+
+from src.logging import logger_wraps
+from src.rabbitmq.couchdb import CouchManager
 from src.rabbitmq.minio import connect_minio
-from src.rabbitmq.mongo import add_document_mongo
 from src.rabbitmq.rabbitmq import bind_queue, connect_rabbimq
 from src.whisper.whisper_transcribe import transcribe_text
 
 
+@logger_wraps()
 def process_worker():
     """Rabbimq worker.
     Function gets connection to rabbimq server and consumes messages
     from topic exchange "processing" with routing_key "process".
     """
 
-    def get_transcript(ch, method, properties, body):
+    def get_transcript(
+        channel: pika.channel.Channel,
+        method: pika.spec.Basic.Deliver,
+        properties: pika.spec.BasicProperties,
+        body: bytes,
+    ):
         """Processes audio file.
         Gets connection to MinIO to get audio file via connect_minio function.
         Transcribes audio via Whisper model (transcribe_text function).
@@ -27,10 +36,10 @@ def process_worker():
         audio_bytes = open(f"src/rabbitmq/{file_name}", "rb")
         transcribe_text(audio_bytes, "src/rabbitmq/transcribed_text.txt")
         audio_bytes.close()
-        uuid = add_document_mongo("src/rabbitmq/transcribed_text.txt")
+        id = CouchManager.add_document(path_to_doc="src/rabbitmq/transcribed_text.txt")
         os.remove(f"src/rabbitmq/{file_name}")
         chat_id = data["chat_id"]
-        message = {"file_uuid": uuid, "chat_id": chat_id, "link": link}
+        message = {"id": id, "chat_id": chat_id, "link": link}
         channel.basic_publish(
             exchange="processing",
             routing_key="postprocess",

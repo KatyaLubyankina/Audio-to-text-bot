@@ -15,9 +15,10 @@ class Settings(BaseSettings):
         rabbitmq_url (str): host for rabbitmq server
         rabbitmq_server (int): port for rabbitmq server
         rabbitmq_user (SecretStr): username to access rabbitmq management
-        mongo_username (SecretStr): username to access MongoDB
-        mongo_password (SecretStr): password to access MongoDB
-        cluster (SecretStr): name of cluster in MongoDB
+        couchdb_database_name (str): database name for couchdb
+        couchdb_username (str): username for couchdb
+        couchdb_password (SecretStr): password for couchdb
+        couchdb_server (str): host:port for couchdb
 
     """
 
@@ -34,9 +35,10 @@ class Settings(BaseSettings):
     secret_key_s3: SecretStr
     rabbitmq_user: SecretStr = "guest"
     rabbitmq_password: SecretStr = "guest"
-    mongo_username: SecretStr
-    mongo_password: SecretStr
-    cluster: SecretStr
+    couchdb_database_name: str = "transcripts"
+    couchdb_username: str = "admin"
+    couchdb_password: SecretStr
+    couchdb_server: str = "couchdb:5984"
 
 
 @lru_cache()

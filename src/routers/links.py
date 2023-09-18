@@ -28,7 +28,7 @@ def handle_link(request: LinkBase) -> None:
     if cache_value is not None:
         url = config.get_settings().url_app + "/link/analytics"
         data = json.dumps(
-            {"chat_id": request.chat_id, "file_uuid": str(cache_value.decode("utf-8"))}
+            {"chat_id": request.chat_id, "file_id": str(cache_value.decode("utf-8"))}
         )
         requests.post(url, data=data)
     else:
@@ -43,5 +43,5 @@ def analytics(request: FileBase):
     Args:
     - request (FileBase): contains chat id and uuid for file in MongoDB.
     """
-    send_analytic(chat_id=request.chat_id, file_uuid=request.file_uuid)
+    send_analytic(chat_id=request.chat_id, file_id=request.file_id)
     return
