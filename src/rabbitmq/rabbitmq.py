@@ -27,7 +27,9 @@ def connect_rabbimq():
     return channel, connection
 
 
-def bind_queue(channel, callback: Callable, binding_key: str):
+def bind_queue(
+    channel: pika.channel.Channel, callback: Callable, binding_key: str
+) -> pika.channel.Channel:
     """Declares queue in rabbitMQ server and binds it.
 
     Args:
@@ -36,7 +38,7 @@ def bind_queue(channel, callback: Callable, binding_key: str):
         binding_key (str): binding key of expected messages
 
     Returns:
-        _type_: _description_
+        channel: connection channel
     """
     result = channel.queue_declare("", exclusive=True)
     queue_name = result.method.queue

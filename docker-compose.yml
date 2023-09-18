@@ -39,6 +39,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=bot
       - RABBITMQ_DEFAULT_PASS=bot
+      - heartbeat = 3600
     container_name: "rabbit_mq"
     ports:
       - 5672:5672
@@ -87,8 +88,26 @@ services:
     image: redis/redis-stack
     ports:
       - 6379:6379
+    volumes:
+      - redis:/var/lib/redis
 
+  couchdb:
+    container_name: "couchdb"
+    build:
+      dockerfile: Dockerfile.couchdb
+    ports:
+      - 5984:5984
+    environment:
+      - COUCHDB_USER =admin
+      - COUCHDB_PASSWORD = password
+      - NODENAME = transcripts
+    volumes:
+      - couchdb:/opt/couchdb/data
 
 volumes:
   minio:
+    driver: local
+  couchdb:
+    driver: local
+  redis:
     driver: local
