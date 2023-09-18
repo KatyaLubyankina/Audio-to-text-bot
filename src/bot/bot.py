@@ -7,7 +7,7 @@ from requests import Response
 
 import src.config as config
 from src.logging import logger_wraps
-from src.rabbitmq.mongo import get_document_mongo
+from src.rabbitmq.couchdb import CouchManager
 
 BOT_TOKEN = config.get_settings().bot_token.get_secret_value()
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -76,7 +76,7 @@ def send_link_to_api(msg) -> Response:
 
 
 @logger_wraps()
-def send_analytic(chat_id: int, file_uuid: str) -> None:
+def send_analytic(chat_id: int, file_id: str) -> None:
     """Function sends analytics for video.
 
     Gets transcript from MongoDB with provided uuid, encode text and
@@ -87,7 +87,7 @@ def send_analytic(chat_id: int, file_uuid: str) -> None:
 
     Function sends user file with analytics in chat with provided chat_id.
     """
-    document = get_document_mongo(file_uuid)["transcript"]
+    document = CouchManager.get_document(file_id)["transcript"]
     byte_document = document.encode("ascii")
     bot.send_document(chat_id, byte_document)
 

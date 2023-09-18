@@ -12,4 +12,4 @@ class FileBase(BaseModel):
     """Schema for file in MongoDB with analytics."""
 
     chat_id: int
-    file_uuid: str
+    file_id: str

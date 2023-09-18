@@ -1,0 +1,5 @@
+FROM apache/couchdb:latest
+
+COPY local.ini /opt/couchdb/etc/
+
+RUN service couchdb start

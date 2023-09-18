@@ -1,5 +1,6 @@
 import json
 
+import pika
 import redis
 import requests
 
@@ -8,15 +9,15 @@ from src.logging import logger_wraps
 from src.rabbitmq.rabbitmq import bind_queue, connect_rabbimq
 
 
-def put_doc_to_redis(link: str, uid: str):
-    """Adds pair link-uuid to Redis.
+def put_doc_to_redis(link: str, id: str):
+    """Adds pair link-id to Redis.
 
     Args:
         link (str): link to Youtube video.
-        uid (str): uuid of file in MongoDB.
+        id (str): uuid of file in CouchDB.
     """
     redis_client = redis.Redis(host="redis")
-    redis_client.set(link, uid)
+    redis_client.set(link, id)
 
 
 @logger_wraps()
@@ -29,7 +30,12 @@ def postprocess_worker():
     to exchange "processing" with binding_key "postprocess".
     """
 
-    def postprocess(ch, method, properties, body):
+    def postprocess(
+        channel: pika.channel.Channel,
+        method: pika.spec.Basic.Deliver,
+        properties: pika.spec.BasicProperties,
+        body: bytes,
+    ):
         """Postprocess of audio file.
         Sends request to /link/analytics FastAPI endpoint with chat id and
         uuid of file in MongoDB.
@@ -37,11 +43,11 @@ def postprocess_worker():
         """
         data = json.loads(body.decode())
         chat_id = data["chat_id"]
-        file_uuid_mongo = data["file_uuid"]
+        id = data["id"]
         link = data["link"]
-        put_doc_to_redis(link, file_uuid_mongo)
+        put_doc_to_redis(link, id)
         url = config.get_settings().url_app + "/link/analytics"
-        request = json.dumps({"chat_id": chat_id, "file_uuid": file_uuid_mongo})
+        request = json.dumps({"chat_id": chat_id, "file_id": id})
         requests.post(url, data=request)
 
     channel, _ = connect_rabbimq()
