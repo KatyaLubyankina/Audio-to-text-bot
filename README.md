@@ -1,11 +1,14 @@
 # Audio-to-text bot
 This telegram bot allows users to send a link for video to [telegram bot](https://t.me/audio_to_text_tg_bot) and get a transcript and analytics on audio track.
 
+## Project schema
+![](./Project_schema.jpg)
+
 **Features**:
 - [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10) - framework for API
 - [Uvicorn](https://www.uvicorn.org/) - for ASGI web server
 - [Rabbitmq](https://www.rabbitmq.com/) - message broker
-- [MongoDB](https://www.mongodb.com/) - NoSQL database to store transcripts of audio files
+- [CouchDB](https://couchdb.apache.org/) - NoSQL database to store transcripts of audio files
 - [Pika](https://pika.readthedocs.io/en/stable/) - implementation of the AMQP 0-9-1 protocol for RabbitMQ
 - [Pydantic-settings](https://docs.pydantic.dev/latest/usage/pydantic_settings/) - for project settings with data validation
 - [Docker Compose](https://docs.docker.com/compose/) - for running application (containers for application, rabbitmq, workers and bot)
@@ -73,4 +76,4 @@ Call pre-commit command to initialize environment for pre-commit-hooks.
 pre-commit
 ```
 
-To use MongoDB database it's required to create an account in [MongoDB Atlas](https://www.mongodb.com/atlas/database) and cluster with database (Audio-to-text-bot) and collection (transcripts). Write username, password and cluster name in src/config.py file.
+If you want to change credentials for CouchDB, specify username and password in local.ini file admin section.
